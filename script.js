@@ -8,12 +8,15 @@ const selectedBiometricDisplay = "Heart Rate";  // How it appears in the UI
 
 async function loadData() {
     data = await d3.csv('Data/stress_data.csv', d3.autoType);
-    console.log("Loaded Data:", data); // Debugging
-
-    createScatterplot();
+    console.log("Loaded Data:", data); 
 }
 
-document.addEventListener('DOMContentLoaded', loadData);
+// document.addEventListener('DOMContentLoaded', loadData);
+document.addEventListener('DOMContentLoaded', async () => {
+    await loadData();
+  
+    createScatterplot();
+});
 
 function createScatterplot() {
     const width = 900; // Adjusted to make space for the legend
