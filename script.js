@@ -7,7 +7,7 @@ const selectedBiometric = "Final_HR";  // The column name in the CSV
 const selectedBiometricDisplay = "Heart Rate";  // How it appears in the UI
 
 async function loadData() {
-    data = await d3.csv('data/stress_data.csv', d3.autoType);
+    data = await d3.csv('Data/stress_data.csv', d3.autoType);
     console.log("Loaded Data:", data); // Debugging
 
     createScatterplot();
