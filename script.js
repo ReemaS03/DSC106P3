@@ -1,17 +1,16 @@
 let data = [];
 let xScale, yScale;
 
-// Choose which EXAM and BIOMETRIC to analyze
-const selectedExam = "Final"; // Options: "Midterm1", "Midterm2", "Final"
+// Choose which EXAM and BIOMETRIC
+const selectedExam = "Final"; 
 const selectedBiometric = "Final_HR";  // The column name in the CSV
-const selectedBiometricDisplay = "Heart Rate";  // How it appears in the UI
+const selectedBiometricDisplay = "Heart Rate"; 
 
 async function loadData() {
     data = await d3.csv('Data/stress_data.csv', d3.autoType);
     console.log("Loaded Data:", data); 
 }
 
-// document.addEventListener('DOMContentLoaded', loadData);
 document.addEventListener('DOMContentLoaded', async () => {
     await loadData();
   
@@ -19,52 +18,48 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 function createScatterplot() {
-    const width = 900; // Adjusted to make space for the legend
+    const width = 900; 
     const height = 600;
     
     const svg = d3
         .select('#chart')
         .append('svg')
-        .attr('viewBox', `0 0 ${width + 200} ${height}`) // Extra space for legend
+        .attr('viewBox', `0 0 ${width + 200} ${height}`)
         .style('overflow', 'visible');
 
-    // X-axis: Biometric (e.g., HR, Temp, EDA)
+    // X-axis: Biometric 
     xScale = d3
         .scaleLinear()
         .domain(d3.extent(data, d => d[selectedBiometric]))
         .range([50, width - 50])
         .nice();
 
-    // Y-axis: Selected Exam Grade
+    // Y-axis: Exam Grade
     const selectedExamGrade = `${selectedExam}_Grade`;
     yScale = d3
         .scaleLinear()
-        .domain([0, 100]) // Grades always range from 0 to 100
+        .domain([0, 100]) 
         .range([height - 50, 50])
         .nice();
 
-    // Calculate Pearson correlation coefficient (r-value)
     const xData = data.map(d => d[selectedBiometric]); // X-axis data
     const yData = data.map(d => d[selectedExamGrade]); // Y-axis data
     const rValue = calculatePearsonCorrelation(xData, yData);
 
-    // Update r-value display above the plot
     const rValueLabel = svg.append("text")
         .attr("class", "r-value-label")
-        .attr("x", width - 40) // Move slightly more to the right
-        .attr("y", 20) // Slightly above the plot
+        .attr("x", width - 40) 
+        .attr("y", 20) 
         .attr("text-anchor", "end")
         .style("font-size", "14px")
         .style("font-weight", "bold")
         .style("fill", "black")
         .text(`${selectedExam} & ${selectedBiometricDisplay} Correlation: r = ${rValue.toFixed(2)}`);
 
-    // Add a group for the legend and position it to the right
     const legend = svg.append("g")
         .attr("class", "legend")
-        .attr("transform", `translate(${width + 20}, 50)`); // Move to the right
+        .attr("transform", `translate(${width + 20}, 50)`);
 
-    // Add legend title
     legend.append("text")
         .attr("x", 0)
         .attr("y", 0)
@@ -72,7 +67,6 @@ function createScatterplot() {
         .style("font-weight", "bold")
         .text("Biometric Correlations");
 
-    // Add legend items dynamically
     const legendData = [{ color: "steelblue", text: `${selectedExam} & ${selectedBiometricDisplay} (r = ${rValue.toFixed(2)})` }];
 
     legend.selectAll("legend-dots")
@@ -80,7 +74,7 @@ function createScatterplot() {
         .enter()
         .append("circle")
         .attr("cx", 0)
-        .attr("cy", (d, i) => (i + 1) * 20) // Space them out
+        .attr("cy", (d, i) => (i + 1) * 20) 
         .attr("r", 6)
         .style("fill", d => d.color);
 
@@ -89,17 +83,15 @@ function createScatterplot() {
         .enter()
         .append("text")
         .attr("x", 15)
-        .attr("y", (d, i) => (i + 1) * 20 + 5) // Align with circles
+        .attr("y", (d, i) => (i + 1) * 20 + 5)
         .style("font-size", "14px")
         .text(d => d.text);
 
-    // Add grid lines
     svg.append('g')
         .attr('class', 'grid')
         .attr('transform', `translate(50, 0)`)
         .call(d3.axisLeft(yScale).tickSize(-width + 100).tickFormat(''));
 
-    // Add dots
     const dots = svg.append('g').attr('class', 'dots');
 
     dots
@@ -120,7 +112,6 @@ function createScatterplot() {
             updateTooltipVisibility(false);
         });
 
-    // Add X axis (Biometric Measure)
     svg.append('g')
         .attr('transform', `translate(0, ${height - 50})`)
         .call(d3.axisBottom(xScale))
@@ -131,7 +122,6 @@ function createScatterplot() {
         .attr('text-anchor', 'middle')
         .text(selectedBiometricDisplay);
 
-    // Add Y axis (Selected Exam Grade)
     svg.append('g')
         .attr('transform', `translate(50, 0)`)
         .call(d3.axisLeft(yScale).tickValues(d3.range(0, 110, 10)))
@@ -143,7 +133,6 @@ function createScatterplot() {
         .attr('text-anchor', 'middle')
         .text(`${selectedExam} Grade`);
 
-    // Add trend line
     addTrendLine(svg, xScale, yScale, xData, yData);
 }
 
