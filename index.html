@@ -3,21 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Project 3</title>
+    <title>Project 3 - Interactive Visualization</title>
     <link rel="stylesheet" href="style.css">
+    <script src="https://d3js.org/d3.v7.min.js"></script> <!-- Load D3.js -->
 </head>
 <body>
-    <script type="module" src="global.js"></script>
-
     <header>
-        <h1>Project 3</h1>
+        <h1>Project 3 - Interactive Visualization</h1>
     </header>
-    
-    <div class="container">
-        <svg viewBox="-50 -50 100 100">
-        </svg>
 
-        <ul class="legend"></ul>
-    </div>
+    <!-- Scatter Plot Container -->
+    <div id="chart"></div>
+
+    <!-- Tooltip for Hover -->
+    <dl id="commit-tooltip" class="info tooltip" hidden>
+        <dt>Student ID</dt><dd id="tooltip-student"></dd>
+        <dt>Final Grade</dt><dd id="tooltip-grade"></dd>
+        <dt>Heart Rate (HR)</dt><dd id="tooltip-hr"></dd>
+    </dl>
+
+    <script src="script.js"></script> 
 </body>
 </html>

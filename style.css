@@ -1,0 +1,73 @@
+.grid line {
+    stroke: lightgray;
+    stroke-opacity: 0.8;  /* Adjust opacity to make it subtle */
+    shape-rendering: crispEdges;
+}
+
+.grid path {
+    display: none; /* Hide the axis line for a cleaner look */
+}
+.tooltip {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(2px);
+    pointer-events: none;
+    transition: opacity 0.2s ease-in-out;
+}
+
+.tooltip.hidden {
+    opacity: 0;
+    visibility: hidden;
+}
+dl.info {
+    display: grid;
+    grid-template-columns: auto auto; /* Two columns: one for labels, one for values */
+    column-gap: 10px; /* Space between label and value */
+    row-gap: 5px; /* Space between rows */
+    align-items: center; /* Align text vertically */
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(2px);
+    transition: opacity 0.2s ease-in-out;
+}
+/* Styles the labels (Student ID, Final Grade, etc.) */
+dl.info dt {
+    font-weight: bold;
+    color: gray;
+    text-align: left;
+}
+/* Styles the values (e.g., S01, 92.5, 78.43) */
+dl.info dd {
+    font-weight: bold;
+    color: black;
+    margin: 0;
+    text-align: right;
+}
+/* R-value label above plot */
+.r-value-label {
+    font-size: 14px;
+    font-weight: bold;
+    fill: black;
+}
+
+/* Legend positioning */
+.legend {
+    font-size: 12px;
+    fill: black;
+}
+
+dl.info[hidden]:not(:hover, :focus-within) {
+    opacity: 0;
+    visibility: hidden;
+}
+
+svg {
+    max-width: 80em;
+    overflow: visible;
+
+}
