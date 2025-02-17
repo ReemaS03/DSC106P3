@@ -2,20 +2,88 @@ let data = [];
 let xScale, yScale;
 
 // Choose which EXAM and BIOMETRIC
-const selectedExam = "Final"; 
-const selectedBiometric = "Final_HR";  // The column name in the CSV
-const selectedBiometricDisplay = "Heart Rate"; 
+let selectedExam = "Final"; 
+let selectedBiometric = "Final_HR";  
+let selectedBiometricDisplay = "Average Heart Rate"; 
+
+const allExams = ["Midterm1", "Midterm2", "Final"];
+const allBiometrics = ["HR", "TEMP", "EDA", "BVP", "IBI"];
+const formatExamName = (exam) => exam.replace(/(\D+)(\d+)/, "$1 $2"); 
+const biometricDisplayMap = {
+    "HR": "Average Heart Rate",
+    "TEMP": "Average Temperature (°C)",
+    "EDA": "Average Electrodermal Activity (μS)",
+    "BVP": "Average Blood Volume Pulse",
+    "IBI": "Average Inter-Beat Interval Duration (seconds)"
+};
 
 async function loadData() {
     data = await d3.csv('Data/stress_data.csv', d3.autoType);
     console.log("Loaded Data:", data); 
+    createDropdowns(); 
+    createScatterplot();
 }
 
-document.addEventListener('DOMContentLoaded', async () => {
-    await loadData();
-  
-    createScatterplot();
-});
+document.addEventListener('DOMContentLoaded', loadData);
+
+
+function createDropdowns() {
+    // Exam Dropdown
+    const examDropdown = d3.select("#chart")
+        .insert("select", "svg")  
+        .attr("id", "examDropdown")
+        .style("position", "absolute")
+        .style("top", "80px")  
+        .style("left", "50px")
+        .style("font-size", "16px");
+
+    examDropdown.selectAll("option")
+        .data(allExams)
+        .enter()
+        .append("option")
+        .text(d => formatExamName(d)) 
+        .attr("value", d => d)
+        .property("selected", d => d === "Final");  // Set initial selection to "Final"
+
+    // Biometric Dropdown
+    const biometricDropdown = d3.select("#chart")
+        .insert("select", "svg")
+        .attr("id", "biometricDropdown")
+        .style("position", "absolute")
+        .style("top", "80px")  
+        .style("left", "150px") 
+        .style("font-size", "16px");
+
+    biometricDropdown.selectAll("option")
+        .data(allBiometrics)
+        .enter()
+        .append("option")
+        .text(d => d) 
+        .attr("value", d => d)
+        .property("selected", d => d === "HR");  // Set initial selection to "HR"
+
+
+    // Event Listener: Exam Selection
+    examDropdown.on("change", function () {
+        selectedExam = this.value;
+        selectedBiometric = `${selectedExam}_${biometricDropdown.node().value}`;
+        updateChart();
+    });
+
+    // Event Listener: Biometric Selection
+    biometricDropdown.on("change", function () {
+        selectedBiometric = `${selectedExam}_${this.value}`;  
+        selectedBiometricDisplay = biometricDisplayMap[this.value]; 
+        updateChart();
+    });
+}
+
+
+// Update the Scatterplot
+function updateChart() {
+    d3.select("svg").remove();  
+    createScatterplot();  
+}
 
 function createScatterplot() {
     const width = 900; 
@@ -24,7 +92,7 @@ function createScatterplot() {
     const svg = d3
         .select('#chart')
         .append('svg')
-        .attr('viewBox', `0 0 ${width + 200} ${height}`)
+        .attr('viewBox', `0 0 ${width + 250} ${height}`)
         .style('overflow', 'visible');
 
     // X-axis: Biometric 
@@ -42,40 +110,58 @@ function createScatterplot() {
         .range([height - 50, 50])
         .nice();
 
-    const xData = data.map(d => d[selectedBiometric]); // X-axis data
-    const yData = data.map(d => d[selectedExamGrade]); // Y-axis data
+    const xData = data.map(d => d[selectedBiometric]); 
+    const yData = data.map(d => d[selectedExamGrade]); 
     const rValue = calculatePearsonCorrelation(xData, yData);
 
-    const rValueLabel = svg.append("text")
+    // Display the correlation value above the plot
+    svg.append("text")
         .attr("class", "r-value-label")
-        .attr("x", width - 40) 
+        .attr("x", width - 20) 
         .attr("y", 20) 
         .attr("text-anchor", "end")
         .style("font-size", "14px")
         .style("font-weight", "bold")
         .style("fill", "black")
-        .text(`${selectedExam} & ${selectedBiometricDisplay} Correlation: r = ${rValue.toFixed(2)}`);
+        .text(`${formatExamName(selectedExam)} & ${selectedBiometricDisplay} Correlation: r = ${rValue.toFixed(2)}`);
 
+    // Generate correlation values for all possible exam-biometric pairs
+    const allRValues = calculateAllCorrelations(data);
+
+    // Append legend group
     const legend = svg.append("g")
         .attr("class", "legend")
         .attr("transform", `translate(${width + 20}, 50)`);
 
-    legend.append("text")
-        .attr("x", 0)
+        legend.append("text")
         .attr("y", 0)
-        .style("font-size", "14px")
+        .attr("text-anchor", "middle")
+        .style("font-size", "16px")
         .style("font-weight", "bold")
-        .text("Biometric Correlations");
+        .selectAll("tspan")
+        .data(["Biometric Correlations", "From Most Positive", "to Most Negative"])
+        .enter()
+        .append("tspan")
+        .attr("x", 90)  
+        .attr("dy", (d, i) => i === 0 ? 0 : 18) 
+        .text(d => d);
+    
+        const legendData = allRValues
+            .map(({ exam, biometric, r }) => ({
+                color: (exam === selectedExam && `${exam}_${biometric}` === selectedBiometric) ? "steelblue" : "gray",
+                text: `${formatExamName(exam)} & ${biometric} (r = ${r.toFixed(2)})`,
+                r: r  
+            }))
+            .sort((a, b) => b.r - a.r);
 
-    const legendData = [{ color: "steelblue", text: `${selectedExam} & ${selectedBiometricDisplay} (r = ${rValue.toFixed(2)})` }];
 
     legend.selectAll("legend-dots")
         .data(legendData)
         .enter()
         .append("circle")
         .attr("cx", 0)
-        .attr("cy", (d, i) => (i + 1) * 20) 
-        .attr("r", 6)
+        .attr("cy", (d, i) => (i + 2) * 30) 
+        .attr("r", 8)
         .style("fill", d => d.color);
 
     legend.selectAll("legend-text")
@@ -83,15 +169,17 @@ function createScatterplot() {
         .enter()
         .append("text")
         .attr("x", 15)
-        .attr("y", (d, i) => (i + 1) * 20 + 5)
+        .attr("y", (d, i) => (i + 2) * 30 + 5)
         .style("font-size", "14px")
         .text(d => d.text);
 
+    // Add grid lines
     svg.append('g')
         .attr('class', 'grid')
         .attr('transform', `translate(50, 0)`)
         .call(d3.axisLeft(yScale).tickSize(-width + 100).tickFormat(''));
 
+    // Add scatter plot points
     const dots = svg.append('g').attr('class', 'dots');
 
     dots
@@ -112,6 +200,7 @@ function createScatterplot() {
             updateTooltipVisibility(false);
         });
 
+    // X axis
     svg.append('g')
         .attr('transform', `translate(0, ${height - 50})`)
         .call(d3.axisBottom(xScale))
@@ -122,6 +211,7 @@ function createScatterplot() {
         .attr('text-anchor', 'middle')
         .text(selectedBiometricDisplay);
 
+    // Y axis
     svg.append('g')
         .attr('transform', `translate(50, 0)`)
         .call(d3.axisLeft(yScale).tickValues(d3.range(0, 110, 10)))
@@ -131,11 +221,12 @@ function createScatterplot() {
         .attr('y', -40)
         .attr('fill', 'black')
         .attr('text-anchor', 'middle')
-        .text(`${selectedExam} Grade`);
+        .text(`${formatExamName(selectedExam)} Grade`);
 
     addTrendLine(svg, xScale, yScale, xData, yData);
 }
 
+// Compute Pearson correlation coefficient
 function calculatePearsonCorrelation(xData, yData) {
     const n = xData.length;
     const meanX = d3.mean(xData);
@@ -150,6 +241,26 @@ function calculatePearsonCorrelation(xData, yData) {
     return denominator === 0 ? 0 : numerator / denominator;
 }
 
+// Compute all correlations
+function calculateAllCorrelations(data) {
+    let results = [];
+    allExams.forEach(exam => {
+        allBiometrics.forEach(biometric => {
+            const examGrade = `${exam}_Grade`;
+            const biometricCol = `${exam}_${biometric}`;
+
+            if (data[0][biometricCol] !== undefined) {
+                const xData = data.map(d => d[biometricCol]);
+                const yData = data.map(d => d[examGrade]);
+                const rValue = calculatePearsonCorrelation(xData, yData);
+                results.push({ exam, biometric, r: rValue });
+            }
+        });
+    });
+    return results;
+}
+
+// Add trend line
 function addTrendLine(svg, xScale, yScale, xData, yData) {
     const xMean = d3.mean(xData);
     const yMean = d3.mean(yData);
@@ -172,6 +283,7 @@ function addTrendLine(svg, xScale, yScale, xData, yData) {
         .attr('stroke-width', 2);
 }
 
+// Tooltip Functions
 function updateTooltipContent(d) {
     const tooltip = document.getElementById('commit-tooltip');
     tooltip.innerHTML = `
@@ -180,7 +292,6 @@ function updateTooltipContent(d) {
         <dt>${selectedBiometricDisplay}</dt><dd>${d[selectedBiometric].toFixed(2)}</dd>
     `;
 }
-
 
 function updateTooltipVisibility(isVisible) {
     document.getElementById('commit-tooltip').hidden = !isVisible;

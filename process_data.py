@@ -36,10 +36,9 @@ for student in grades.keys():
         if os.path.exists(exam_path):  
             biometrics = {
                 "HR": "HR.csv",
-                "Temp": "TEMP.csv",
+                "TEMP": "TEMP.csv",
                 "EDA": "EDA.csv",
                 "BVP": "BVP.csv",
-                "ACC": "ACC.csv",
                 "IBI": "IBI.csv"
             }
 
@@ -52,27 +51,17 @@ for student in grades.keys():
 
                     if key == "IBI":
                         df = df.iloc[1:, 1] 
-                    elif key == "ACC":
-                        df = df.iloc[2:, :] 
-                        df = df.astype(float) / 64  
-                        
-                        avg_x = df.iloc[:, 0].mean()
-                        avg_y = df.iloc[:, 1].mean()
-                        avg_z = df.iloc[:, 2].mean()
-                        
-                        avg_magnitude = (df.iloc[:, 0]**2 + df.iloc[:, 1]**2 + df.iloc[:, 2]**2).mean()**0.5
-                        
-                        student_data[f"{exam}_ACC_X"] = avg_x
-                        student_data[f"{exam}_ACC_Y"] = avg_y
-                        student_data[f"{exam}_ACC_Z"] = avg_z
-                        student_data[f"{exam}_ACC_Magnitude"] = avg_magnitude
-
+    
                     else:
                         df = df.iloc[2:, 0]  
-                    if key != "ACC":
-                        avg_value = df.astype(float).mean() 
 
-                        student_data[f"{exam}_{key}"] = avg_value
+                    avg_value = df.astype(float).mean() 
+                if exam == 'Midterm 1':
+                    student_data[f"Midterm1_{key}"] = avg_value
+                if exam == 'Midterm 2':
+                    student_data[f"Midterm2_{key}"] = avg_value
+                if exam == 'Final':
+                    student_data[f"Final_{key}"] = avg_value
 
     processed_data.append(student_data)
 
