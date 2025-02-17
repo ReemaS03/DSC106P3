@@ -68,7 +68,8 @@ dl.info[hidden]:not(:hover, :focus-within) {
 }
 
 svg {
-    max-width: 80em;
+    max-width: 60em;
     overflow: visible;
-
+    margin: 0 auto;
+    width: 100%;
 }

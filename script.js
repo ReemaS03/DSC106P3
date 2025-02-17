@@ -289,7 +289,7 @@ function updateTooltipContent(d) {
     tooltip.innerHTML = `
         <dt>Student ID</dt><dd>${d.Student_ID}</dd>
         <dt>${selectedExam} Grade</dt><dd>${d[`${selectedExam}_Grade`]}</dd>
-        <dt>${selectedBiometricDisplay}</dt><dd>${d[selectedBiometric].toFixed(2)}</dd>
+        <dt>${selectedBiometricDisplay}</dt><dd>${d[selectedBiometric].toFixed(3)}</dd>
     `;
 }
 
