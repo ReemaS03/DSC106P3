@@ -466,3 +466,17 @@ d3.select("#tryAgainButton").on("click", function () {
 d3.select("#startOverButton").on("click", function () {
     location.reload(); 
 });
+
+document.getElementById("writeupButton").addEventListener("click", function () {
+    d3.select("#conclusionOverlay").style("display", "none");
+    d3.select("#writeupSection").style("display", "block");
+});
+
+document.getElementById("backToConclusion").addEventListener("click", function () {
+    d3.select("#writeupSection").style("display", "none");
+    d3.select("#conclusionOverlay").style("display", "block");
+});
+
+document.getElementById("startOverButton2").addEventListener("click", function () {
+    location.reload();
+});
