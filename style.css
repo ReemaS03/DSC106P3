@@ -113,14 +113,23 @@ svg {
     margin-top: 20px;
     padding: 10px 20px;
     font-size: 18px;
-    cursor: pointer;
+    display: none;  
+    opacity: 0;
+    padding: 12px 12px;  
+    background-color: #007bff;  
+    color: white;  
+    border: none;  
+    border-radius: 6px;  
+    cursor: pointer;  
+    transition: opacity 1s ease-in-out, transform 0.3s ease-in-out;
 }
+
 #siteTitle {
     text-align: center;  
     width: 100%; 
     font-size: 24px; 
     font-weight: bold;
-    margin-bottom: 20px;  /* Keep space below for the button */
+    margin-bottom: 20px; 
 }
 
 /* Container for the button */
@@ -128,7 +137,7 @@ svg {
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 45px;  /* Reserves space to prevent shifting */
+    min-height: 45px;  
 }
 
 /* The Button */
@@ -149,23 +158,22 @@ svg {
 #doneButton:hover {
     background-color: #0056b3;
 }
+
 /* Dropdowns Box */
 #dropdownWrapper {
-    position: absolute;  /* Allows precise placement */
-    top: -50px;  /* Moves dropdown 10px above the plot */
-    left: 10px;  /* Aligns to top-left */
-    display: flex !important;  /* Force horizontal layout */
-    flex-direction: row !important;  /* Ensure dropdowns are side-by-side */
+    position: absolute;  
+    top: -50px; 
+    left: 10px; 
+    display: flex !important;  
+    flex-direction: row !important;  
     align-items: center;
     justify-content: flex-start;  
     background-color: #f8f8f8;
     padding: 10px;
     border-radius: 5px;
     border: 1px solid black;
-    z-index: 10;  /* Ensures it stays above other elements */
+    z-index: 10;  
 }
-
-
 
 /* Each dropdown + label */
 .dropdown-group {
@@ -181,8 +189,8 @@ svg {
     font-weight: bold;
     margin-bottom: 5px;
     text-align: center;
-    flex-direction: row;  /* Aligns items in a row */
-    align-items: center;  /* Aligns text with dropdown */
+    flex-direction: row; 
+    align-items: center;  
 }
 
 /* Style dropdowns */
@@ -198,7 +206,7 @@ svg {
     display: none;
     text-align: center;
     width: 100%;
-    margin-top: 20px; /* Pushes it down below the title */
+    margin-top: 20px; 
 }
 
 #conclusionOverlay h2 {
@@ -213,7 +221,7 @@ svg {
 }
 
 #conclusionOverlay ul {
-    display: inline-block; /* Ensures list is centered */
+    display: inline-block;  
     text-align: left;
     margin-bottom: 20px;
 }
@@ -230,6 +238,9 @@ svg {
     text-align: center;
     width: 100%;
     margin-top: 20px;
+    max-width: 900px; 
+    margin: 0 auto;   
+    padding: 20px;
 }
 
 #writeupSection h2 {
@@ -241,6 +252,10 @@ svg {
 #writeupSection p {
     font-size: 18px;
     margin-bottom: 10px;
+    text-align: left;
+}
+#writeupSection h3 {
+    text-align: left;
 }
 
 #writeupSection button {

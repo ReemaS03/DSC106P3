@@ -28,11 +28,9 @@ document.addEventListener('DOMContentLoaded', loadData);
 
 
 function createDropdowns() {
-    // Ensure dropdownWrapper is inside #plotContainer
     const plotContainer = d3.select("#plotContainer");
     let dropdownWrapper = plotContainer.select("#dropdownWrapper");
 
-    // If dropdownWrapper doesn't exist, create it
     if (dropdownWrapper.empty()) {
         dropdownWrapper = plotContainer.append("div")
             .attr("id", "dropdownWrapper");
@@ -94,7 +92,7 @@ function createScatterplot() {
     const svg = d3
         .select('#chart')
         .append('svg')
-        .attr('preserveAspectRatio', 'xMinYMin meet')  // Ensures it scales
+        .attr('preserveAspectRatio', 'xMinYMin meet')  
         .attr('viewBox', `0 0 ${width + 250} ${height}`);
 
 
@@ -315,7 +313,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const overlay = d3.select("#overlay");
     const plotContainer = d3.select("#plotContainer");
     const siteTitle = d3.select("#siteTitle");
-    const doneButton = d3.select("#doneButton"); // Select done button
+    const doneButton = d3.select("#doneButton"); 
 
     function showNextButton() {
         nextButton.transition().duration(500).style("opacity", 1).style("display", "block");
@@ -328,7 +326,7 @@ document.addEventListener("DOMContentLoaded", function () {
     function nextStep() {
         step++;
         hideNextButton();
-        introText.html(""); // Clear old text immediately
+        introText.html(""); 
     
         switch (step) {
             case 1:
@@ -387,7 +385,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 break;
     
             case 5:  
-                // Final step: Hide story and show the plot
                 introText.transition().duration(200).style("opacity", 0)
                          .on("end", function() {
                              d3.select("#overlay").transition().duration(500).style("opacity", 0)
@@ -407,7 +404,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     
 
-    // Click handler for "Next" button
+    // Click for "Next" button
     nextButton.on("click", nextStep);
 
     // Full-Screen Prompt Buttons
@@ -415,20 +412,17 @@ document.addEventListener("DOMContentLoaded", function () {
         document.documentElement.requestFullscreen();
         d3.select("#fullScreenPrompt").style("display", "none");
         nextStep();
-        // d3.select("#plotContainer").transition().duration(500).style("opacity", 1).style("display", "block");
-
     });
 
     d3.select("#skipFullScreen").on("click", function () {
-        d3.select("#fullScreenPrompt").style("display", "none"); // Hide full-screen prompt
-        nextStep();  // Starts the intro steps properly before hiding overlay
-        // d3.select("#plotContainer").transition().duration(500).style("opacity", 1).style("display", "block");
+        d3.select("#fullScreenPrompt").style("display", "none"); 
+        nextStep(); 
     });
     
 
     d3.select("#skipToPlot").on("click", function () {
         d3.select("#fullScreenPrompt").style("display", "none"); 
-        d3.select("#overlay").style("display", "none");  // Hide overlay completely
+        d3.select("#overlay").style("display", "none");  
         d3.select("#siteTitle").style("display", "block");  
         d3.select("#plotContainer").transition().duration(500).style("opacity", 1).style("display", "block");
     
@@ -436,7 +430,7 @@ document.addEventListener("DOMContentLoaded", function () {
         document.body.style.overflow = "auto";  
         document.documentElement.style.overflow = "auto";  
     
-        // Ensure "I'm Done" button appears after 5 sec
+        // Ensure "I'm Done" button appears after 1 sec
         setTimeout(() => {
             d3.select("#doneButton").style("display", "block")
                 .transition().duration(1000).style("opacity", 1);
@@ -447,7 +441,7 @@ document.addEventListener("DOMContentLoaded", function () {
     doneButton.on("click", showConclusionScreen);
 });
 
-// Function to Show Conclusion
+// Show Conclusion
 function showConclusionScreen() {
     d3.select("#plotContainer").style("display", "none");
     d3.select("#doneButton").style("display", "none");

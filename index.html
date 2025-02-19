@@ -8,10 +8,6 @@
     <script src="https://d3js.org/d3.v7.min.js"></script> 
 </head>
 <body>
-    <!-- <header>
-        <h1 id="title">Can a Single Biometric Measure Determine an Exam Grade?</h1>
-    </header> -->
-
     <script src="script.js" type="module"></script> 
 
     <!-- Full-Screen Overlay -->
@@ -29,8 +25,6 @@
     <!-- The Plot (Initially Hidden) -->
     <h1 id="siteTitle" style="display: none;">Can a Single Biometric Measure Determine an Exam Grade?</h1>
 
-    <!-- opacity: 0; left: 90%;  top: 50px; -->
-    <!-- position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%) -->
 
     <div id="conclusionOverlay" style="display: none;">
         <h2>So, can a single biometric predict an exam grade? Or was it too good to be true?</h2>
@@ -59,7 +53,7 @@
         <button id="startOverButton2">Start Over</button>
         
         <h2>Writeup</h2>
-        <h3>Motivation and Target Audience:</h3> <!-- Placeholder text for the writeup -->
+        <h3>Motivation and Target Audience:</h3> 
         <p>Our project explores the notion that a single biometric grade can predict an exam grade. We wanted the users to explore the data and evaluate the validity of the proposed hypothesis themselves. This visualization can be particularly useful for students, educators, and researchers that are interested in understanding the potential relationship between biometric measures and exam grades. For example, students can use this to reflect on whether a specific biometric measure would have an impact on exam grades. A key question this visualization helps to answer is: can a single biometric measure determine an exam grade? Users can analyze this by exploring the possible combinations of different exams and biometrics we have and observing the trends.</p>
         <h3>Design Rationale:</h3>
         <p>We chose a scatter plot because it effectively displays correlations between two continuous variables, exam grades and biometric measures.We initially considered creating three scatter plots with all five biometrics plotted against different exam scores, with the three different exams - Midterm 1, Midterm 2, Final -  as the dropdown, but we ultimately decided against it. This approach would make each scatter plot too cluttered, making it difficult for the viewer to see each biometric’s correlation with the exam scores. Instead, we chose a single scatter plot and users could select a specific biometric and exam combination using drop-down lists. When it comes to processing the data, out of the six biometrics in our dataset, we chose to only use five, excluding the ACC, because the ACC data format didn’t seem viable for our visualization, as it would require a different type of plot, making it more complex than we want especially since we want students to use it not just experts. Since the original dataset was separated into multiple folders and files, we decided to combine it all into a single CSV, by manually input the exam grades, calculating the average of the five biometrics for each student for all students in the dataset. Then combining it all into a CSV file that we used for the rest of our project.</p>
@@ -84,7 +78,6 @@
 
     <div id="plotContainer" style="opacity: 0;">
         <div id="chart"></div>
-        <!-- <div id="dropdownContainer"></div> -->
          <!-- Dropdowns Box -->
         <div id="dropdownWrapper"></div>
     </div>
