@@ -3,19 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Project 3 - Interactive Visualization</title>
+    <title>Can a Single Biometric Measure Determine an Exam Grade?</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://d3js.org/d3.v7.min.js"></script> 
 </head>
 <body>
-    <header>
-        <h1>Project 3</h1>
-    </header>
+    <!-- <header>
+        <h1 id="title">Can a Single Biometric Measure Determine an Exam Grade?</h1>
+    </header> -->
 
     <script src="script.js" type="module"></script> 
 
-    <!-- Scatter Plot Container -->
-    <div id="chart"></div>
+    <!-- Full-Screen Overlay -->
+    <div id="overlay">
+        <div id="fullScreenPrompt">
+            <p>For the best experience, please view in full-screen mode.</p>
+            <button id="enterFullScreen">Enter Full-Screen</button>
+            <button id="skipFullScreen">Continue Without Full-Screen</button>
+            <button id="skipToPlot">Skip to Plot</button>
+        </div>
+        <div id="introText"></div>
+        <button id="nextButton" style="display: none;">Next</button>
+    </div>
+
+    <!-- The Plot (Initially Hidden) -->
+    <h1 id="siteTitle" style="display: none;">Can a Single Biometric Measure Determine an Exam Grade?</h1>
+
+    <!-- opacity: 0; left: 90%;  top: 50px; -->
+    <!-- position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%) -->
+
+    <div id="conclusionOverlay" style="display: none;">
+        <h2>So, can a single biometric predict an exam grade? Or was it too good to be true?</h2>
+        <ul>
+            <li><b>What does "r" mean?</b> "r" (correlation coefficient) measures the strength and direction of the relationship between two variables.</li>
+            <li><b>Positive correlation (r > 0):</b> Higher biometric values are associated with higher exam scores (e.g., if r = 0.5, students with higher biometrics tend to score higher).</li>
+            <li><b>Negative correlation (r < 0):</b> Higher biometric values are associated with lower exam scores (e.g., if r = -0.5, students with higher biometrics tend to score lower).</li>
+            <li><b>Strength of correlation:</b> An r value close to 1 or -1 means a stronger relationship, while r near 0 means almost no relationship.</li>
+        </ul>
+        
+        <p>No single biometric measure strongly correlates with exam performance.</p>
+        <ul>
+            <li>The strongest correlation was only <b>0.60</b> (moderate).</li>
+            <li>The strongest correlation was only <b>0.60</b> (moderate).</li>
+            <li>Most correlations were weak, close to <b>0</b>.</li>
+            <li>Different biometrics showed different patterns across exams.</li>
+            <li>Factors like study habits, stress, and prior knowledge also play a role.</li>
+        </ul>
+        <p>Turns out, success isn't as simple as checking your pulse before an exam!</p>
+        <button id="tryAgainButton">Go Back to Plot</button>
+        <button id="startOverButton">Start Over</button>
+    </div>
+    
+    <!-- "I'm Done" Button (Initially Hidden) - Placed Below Title -->
+    <div id="doneButtonContainer">
+        <button id="doneButton" style="display: none;">Next</button>
+    </div>
+
+    <div id="plotContainer" style="opacity: 0;">
+        <div id="chart"></div>
+        <!-- <div id="dropdownContainer"></div> -->
+         <!-- Dropdowns Box -->
+        <div id="dropdownWrapper"></div>
+    </div>
+
 
     <!-- Tooltip for Hover -->
     <dl id="commit-tooltip" class="info tooltip" hidden>

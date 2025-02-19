@@ -68,8 +68,159 @@ dl.info[hidden]:not(:hover, :focus-within) {
 }
 
 svg {
-    max-width: 60em;
+    max-width: 70em;
     overflow: visible;
-    margin: 0 auto;
+}
+#plotContainer {
+    display: flex;
+    align-items: flex-start;
+    justify-content: left; 
+    position: relative;
+    display: flex;
+    flex-direction: column; 
+    align-items: left;
+    left: 50px;
+    margin-top: 100px;
+    transition: opacity 1s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Full-Screen Overlay */
+#overlay {
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+}
+
+#introText {
+    font-size: 24px;
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+}
+
+/* Next Button */
+#nextButton {
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 18px;
+    cursor: pointer;
+}
+#siteTitle {
+    text-align: center;  
+    width: 100%; 
+    font-size: 24px; 
+    font-weight: bold;
+    margin-bottom: 20px;  /* Keep space below for the button */
+}
+
+/* Container for the button */
+#doneButtonContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 45px;  /* Reserves space to prevent shifting */
+}
+
+/* The Button */
+#doneButton {
+    display: none;  
+    opacity: 0;
+    font-size: 14px;  
+    padding: 12px 12px;  
+    background-color: #007bff;  
+    color: white;  
+    border: none;  
+    border-radius: 6px;  
+    cursor: pointer;  
+    transition: opacity 1s ease-in-out, transform 0.3s ease-in-out;
+}
+
+/* Button Hover Effect */
+#doneButton:hover {
+    background-color: #0056b3;
+}
+/* Dropdowns Box */
+#dropdownWrapper {
+    position: absolute;  /* Allows precise placement */
+    top: -50px;  /* Moves dropdown 10px above the plot */
+    left: 10px;  /* Aligns to top-left */
+    display: flex !important;  /* Force horizontal layout */
+    flex-direction: row !important;  /* Ensure dropdowns are side-by-side */
+    align-items: center;
+    justify-content: flex-start;  
+    background-color: #f8f8f8;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid black;
+    z-index: 10;  /* Ensures it stays above other elements */
+}
+
+
+
+/* Each dropdown + label */
+.dropdown-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 5px 0;
+}
+
+/* Labels for dropdowns */
+.dropdown-group label {
+    font-size: 12px;
+    font-weight: bold;
+    margin-bottom: 5px;
+    text-align: center;
+    flex-direction: row;  /* Aligns items in a row */
+    align-items: center;  /* Aligns text with dropdown */
+}
+
+/* Style dropdowns */
+#examDropdown, #biometricDropdown {
+    font-size: 10px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#conclusionOverlay {
+    display: none;
+    text-align: center;
     width: 100%;
+    margin-top: 20px; /* Pushes it down below the title */
+}
+
+#conclusionOverlay h2 {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+#conclusionOverlay p {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+#conclusionOverlay ul {
+    display: inline-block; /* Ensures list is centered */
+    text-align: left;
+    margin-bottom: 20px;
+}
+
+#conclusionOverlay button {
+    font-size: 16px;
+    padding: 10px 15px;
+    margin: 5px;
+    cursor: pointer;
 }

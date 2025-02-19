@@ -28,56 +28,58 @@ document.addEventListener('DOMContentLoaded', loadData);
 
 
 function createDropdowns() {
+    // Ensure dropdownWrapper is inside #plotContainer
+    const plotContainer = d3.select("#plotContainer");
+    let dropdownWrapper = plotContainer.select("#dropdownWrapper");
+
+    // If dropdownWrapper doesn't exist, create it
+    if (dropdownWrapper.empty()) {
+        dropdownWrapper = plotContainer.append("div")
+            .attr("id", "dropdownWrapper");
+    }
+
+    // Remove previous dropdowns
+    dropdownWrapper.html("");
+
     // Exam Dropdown
-    const examDropdown = d3.select("#chart")
-        .insert("select", "svg")  
-        .attr("id", "examDropdown")
-        .style("position", "absolute")
-        .style("top", "80px")  
-        .style("left", "50px")
-        .style("font-size", "16px");
+    const examGroup = dropdownWrapper.append("div").attr("class", "dropdown-group");
+    examGroup.append("label").attr("for", "examDropdown").text("Exam (X-axis)");
+    const examDropdown = examGroup.append("select").attr("id", "examDropdown");
 
     examDropdown.selectAll("option")
         .data(allExams)
         .enter()
         .append("option")
-        .text(d => formatExamName(d)) 
+        .text(d => formatExamName(d))
         .attr("value", d => d)
-        .property("selected", d => d === "Final");  // Set initial selection to "Final"
+        .property("selected", d => d === "Final");
 
     // Biometric Dropdown
-    const biometricDropdown = d3.select("#chart")
-        .insert("select", "svg")
-        .attr("id", "biometricDropdown")
-        .style("position", "absolute")
-        .style("top", "80px")  
-        .style("left", "150px") 
-        .style("font-size", "16px");
+    const biometricGroup = dropdownWrapper.append("div").attr("class", "dropdown-group");
+    biometricGroup.append("label").attr("for", "biometricDropdown").text("Biometric (Y-axis)");
+    const biometricDropdown = biometricGroup.append("select").attr("id", "biometricDropdown");
 
     biometricDropdown.selectAll("option")
         .data(allBiometrics)
         .enter()
         .append("option")
-        .text(d => d) 
+        .text(d => d)
         .attr("value", d => d)
-        .property("selected", d => d === "HR");  // Set initial selection to "HR"
+        .property("selected", d => d === "HR");
 
-
-    // Event Listener: Exam Selection
+    // Event Listeners
     examDropdown.on("change", function () {
         selectedExam = this.value;
         selectedBiometric = `${selectedExam}_${biometricDropdown.node().value}`;
         updateChart();
     });
 
-    // Event Listener: Biometric Selection
     biometricDropdown.on("change", function () {
-        selectedBiometric = `${selectedExam}_${this.value}`;  
-        selectedBiometricDisplay = biometricDisplayMap[this.value]; 
+        selectedBiometric = `${selectedExam}_${this.value}`;
+        selectedBiometricDisplay = biometricDisplayMap[this.value];
         updateChart();
     });
 }
-
 
 // Update the Scatterplot
 function updateChart() {
@@ -92,8 +94,9 @@ function createScatterplot() {
     const svg = d3
         .select('#chart')
         .append('svg')
-        .attr('viewBox', `0 0 ${width + 250} ${height}`)
-        .style('overflow', 'visible');
+        .attr('preserveAspectRatio', 'xMinYMin meet')  // Ensures it scales
+        .attr('viewBox', `0 0 ${width + 250} ${height}`);
+
 
     // X-axis: Biometric 
     xScale = d3
@@ -302,3 +305,164 @@ function updateTooltipPosition(event) {
     tooltip.style.left = `${event.clientX}px`;
     tooltip.style.top = `${event.clientY}px`;
 }
+
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    let step = 0;
+    const introText = d3.select("#introText");
+    const nextButton = d3.select("#nextButton");
+    const overlay = d3.select("#overlay");
+    const plotContainer = d3.select("#plotContainer");
+    const siteTitle = d3.select("#siteTitle");
+    const doneButton = d3.select("#doneButton"); // Select done button
+
+    function showNextButton() {
+        nextButton.transition().duration(500).style("opacity", 1).style("display", "block");
+    }
+
+    function hideNextButton() {
+        nextButton.style("opacity", 0).style("display", "none");
+    }
+
+    function nextStep() {
+        step++;
+        hideNextButton();
+        introText.html(""); // Clear old text immediately
+    
+        switch (step) {
+            case 1:
+                introText.html("Can a single biometric measure predict your exam grade?")
+                         .style("opacity", 0)
+                         .transition().duration(50).style("opacity", 1)
+                         .on("end", showNextButton);
+                break;
+    
+            case 2:
+                introText.transition().duration(200).style("opacity", 0)
+                         .on("end", function() {
+                             introText.html("For example, some believe that a lower heart rate means better exam performance.")
+                                      .style("opacity", 0)
+                                      .transition().duration(1000).style("opacity", 1)
+                                      .on("end", showNextButton);
+                         });
+                break;
+    
+            case 3:
+                introText.transition().duration(200).style("opacity", 0)
+                         .on("end", function() {
+                             introText.html("That sounds too good to be true…")
+                                      .style("opacity", 0)
+                                      .transition().duration(1000).style("opacity", 1);
+    
+                             setTimeout(() => {
+                                 introText.html("That sounds too good to be true… <br><br> But let’s explore the data ourselves!")
+                                          .style("opacity", 0)
+                                          .transition().duration(1000).style("opacity", 1)
+                                          .on("end", showNextButton);
+                             }, 1500);
+                         });
+                break;
+    
+            case 4:
+                introText.transition().duration(200).style("opacity", 0)
+                         .on("end", function() {
+                             introText.html("You can explore the relationship between exam grades and biometrics.")
+                                      .style("opacity", 0)
+                                      .transition().duration(1000).style("opacity", 1);
+    
+                             setTimeout(() => {
+                                 introText.html("You can explore the relationship between exam grades and biometrics.<br><br> We have data from 10 students, across 3 exams and 5 biometric measures.")
+                                          .style("opacity", 0)
+                                          .transition().duration(1000).style("opacity", 1);
+                             }, 1500);
+    
+                             setTimeout(() => {
+                                 introText.html("You can explore the relationship between exam grades and biometrics.<br><br> We have data from 10 students, across 3 exams and 5 biometric measures.<br><br> Although a larger sample would be ideal for strong conclusions, <br><br> this dataset allows us to observe patterns and think critically about these relationships.")
+                                          .style("opacity", 0)
+                                          .transition().duration(1000).style("opacity", 1)
+                                          .on("end", showNextButton);
+                             }, 3000);
+                         });
+                break;
+    
+            case 5:  
+                // Final step: Hide story and show the plot
+                introText.transition().duration(200).style("opacity", 0)
+                         .on("end", function() {
+                             d3.select("#overlay").transition().duration(500).style("opacity", 0)
+                                .on("end", function() {
+                                    d3.select("#overlay").style("display", "none");
+                                    d3.select("#siteTitle").style("display", "block");
+                                    d3.select("#plotContainer").transition().duration(500).style("opacity", 1).style("display", "block");
+                                    setTimeout(() => {
+                                        d3.select("#doneButton")
+                                            .style("display", "block")
+                                            .transition().duration(1000).style("opacity", 1);
+                                    }, 1000);
+                                });
+                         });
+                break;
+        }
+    }
+    
+
+    // Click handler for "Next" button
+    nextButton.on("click", nextStep);
+
+    // Full-Screen Prompt Buttons
+    d3.select("#enterFullScreen").on("click", function () {
+        document.documentElement.requestFullscreen();
+        d3.select("#fullScreenPrompt").style("display", "none");
+        nextStep();
+        // d3.select("#plotContainer").transition().duration(500).style("opacity", 1).style("display", "block");
+
+    });
+
+    d3.select("#skipFullScreen").on("click", function () {
+        d3.select("#fullScreenPrompt").style("display", "none"); // Hide full-screen prompt
+        nextStep();  // Starts the intro steps properly before hiding overlay
+        // d3.select("#plotContainer").transition().duration(500).style("opacity", 1).style("display", "block");
+    });
+    
+
+    d3.select("#skipToPlot").on("click", function () {
+        d3.select("#fullScreenPrompt").style("display", "none"); 
+        d3.select("#overlay").style("display", "none");  // Hide overlay completely
+        d3.select("#siteTitle").style("display", "block");  
+        d3.select("#plotContainer").transition().duration(500).style("opacity", 1).style("display", "block");
+    
+        // Allow scrolling
+        document.body.style.overflow = "auto";  
+        document.documentElement.style.overflow = "auto";  
+    
+        // Ensure "I'm Done" button appears after 5 sec
+        setTimeout(() => {
+            d3.select("#doneButton").style("display", "block")
+                .transition().duration(1000).style("opacity", 1);
+        }, 1000);
+    });
+    
+
+    doneButton.on("click", showConclusionScreen);
+});
+
+// Function to Show Conclusion
+function showConclusionScreen() {
+    d3.select("#plotContainer").style("display", "none");
+    d3.select("#doneButton").style("display", "none");
+    d3.select("#conclusionOverlay").style("display", "block").style("opacity", 0)
+        .transition().duration(1000).style("opacity", 1);
+}
+
+// "Try Again" button: returns user to the plot
+d3.select("#tryAgainButton").on("click", function () {
+    d3.select("#conclusionOverlay").style("display", "none");
+    d3.select("#plotContainer").style("display", "block");
+    d3.select("#doneButton").style("display", "block");
+});
+
+// "Start Over" button: restarts the entire experience
+d3.select("#startOverButton").on("click", function () {
+    location.reload(); 
+});
