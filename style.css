@@ -264,3 +264,31 @@ svg {
     margin: 5px;
     cursor: pointer;
 }
+
+#rExplanation, #trendlineExplanation {
+    max-width: 800px;
+    margin: 0 auto 20px auto; 
+    padding: 10px;
+    background-color: #f8f8f8;
+    border-radius: 8px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: left;
+}
+
+#rExplanation h3, #trendlineExplanation h3 {
+    font-size: 18px;
+    margin-bottom: 8px;
+}
+
+#rExplanation p, #trendlineExplanation p {
+    font-size: 16px;
+}
+
+#rExplanation ul, #trendlineExplanation ul {
+    padding-left: 20px;
+}
+
+#rExplanation li, #trendlineExplanation li {
+    font-size: 14px;
+    margin-bottom: 5px;
+}

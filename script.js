@@ -20,8 +20,8 @@ const biometricDisplayMap = {
 async function loadData() {
     data = await d3.csv('Data/stress_data.csv', d3.autoType);
     console.log("Loaded Data:", data); 
-    createDropdowns(); 
-    createScatterplot();
+    // createDropdowns(); 
+    // createScatterplot();
 }
 
 document.addEventListener('DOMContentLoaded', loadData);
@@ -95,7 +95,20 @@ function createScatterplot() {
         .attr('preserveAspectRatio', 'xMinYMin meet')  
         .attr('viewBox', `0 0 ${width + 250} ${height}`);
 
+    const margin = { top: 50, right: 250, bottom: 50, left: 50 };
+    const innerWidth = width - margin.left - margin.right;
+    const innerHeight = height - margin.top - margin.bottom;
 
+
+    // light background shades
+    const examColors = {
+        "Midterm1": "#f7f3ff",  // Lavendar
+        "Midterm2": "#f9f4e8",  // Light beige
+        "Final": "#f0f8f0"      // Light green
+    };
+
+    const selectedColor = examColors[selectedExam] || "#ffffff"; // Default white
+ 
     // X-axis: Biometric 
     xScale = d3
         .scaleLinear()
@@ -110,6 +123,15 @@ function createScatterplot() {
         .domain([0, 100]) 
         .range([height - 50, 50])
         .nice();
+
+    // the background for the scatter plot area
+    svg.append("rect")
+        .attr("x", margin.left)
+        .attr("y", margin.top)
+        .attr("width", xScale.range()[1] - xScale.range()[0])
+        .attr("height", innerHeight)
+        .attr("fill", selectedColor); 
+    
 
     const xData = data.map(d => d[selectedBiometric]); 
     const yData = data.map(d => d[selectedExamGrade]); 
@@ -383,8 +405,40 @@ document.addEventListener("DOMContentLoaded", function () {
                              }, 3000);
                          });
                 break;
-    
             case 5:  
+            introText.transition().duration(200).style("opacity", 0)
+                .on("end", function() {
+                    introText.html(`
+                        <h3 style="text-align: center; font-size: 20px; margin-bottom: 15px;">Before You Explore the Data</h3>
+        
+                        <div id="rExplanation">
+                            <h3>Understanding Correlation ("r")</h3>
+                            <p>Here are some key things to know about correlation and how to interpret the results:</p>
+                            <ul>
+                                <li><b>What does "r" mean?</b> The correlation coefficient "r" measures the strength and direction of a relationship.</li>
+                                <li><b>Positive correlation (r > 0):</b> Higher biometric values are associated with higher exam scores.</li>
+                                <li><b>Negative correlation (r < 0):</b> Higher biometric values are associated with lower exam scores.</li>
+                                <li><b>Strength:</b> An "r" value close to 1 or -1 means a strong relationship, while an "r" near 0 means little to no relationship.</li>
+                            </ul>
+                        </div>
+        
+                        <div id="trendlineExplanation">
+                            <h3>Understanding the Red Trend Line</h3>
+                            <p>The red line represents the <b>trend line (linear regression line)</b>. It helps visualize the overall relationship between biometric values and exam scores.</p>
+                            <ul>
+                                <li>If the line slopes <b>upward</b>, there is a positive correlation (higher biometric values tend to be linked with higher scores).</li>
+                                <li>If the line slopes <b>downward</b>, there is a negative correlation (higher biometric values tend to be linked with lower scores).</li>
+                                <li>If the line is <b>flat</b>, there is little to no relationship between biometric values and exam scores.</li>
+                            </ul>
+                        </div>
+                    `)
+                    .style("opacity", 0)
+                    .transition().duration(1000).style("opacity", 1)
+                    .on("end", showNextButton); 
+                });
+            break;
+
+            case 6:  
                 introText.transition().duration(200).style("opacity", 0)
                          .on("end", function() {
                              d3.select("#overlay").transition().duration(500).style("opacity", 0)
@@ -392,6 +446,8 @@ document.addEventListener("DOMContentLoaded", function () {
                                     d3.select("#overlay").style("display", "none");
                                     d3.select("#siteTitle").style("display", "block");
                                     d3.select("#plotContainer").transition().duration(500).style("opacity", 1).style("display", "block");
+                                    createDropdowns(); 
+                                    createScatterplot();
                                     setTimeout(() => {
                                         d3.select("#doneButton")
                                             .style("display", "block")
@@ -402,7 +458,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 break;
         }
     }
-    
 
     // Click for "Next" button
     nextButton.on("click", nextStep);
@@ -426,11 +481,12 @@ document.addEventListener("DOMContentLoaded", function () {
         d3.select("#siteTitle").style("display", "block");  
         d3.select("#plotContainer").transition().duration(500).style("opacity", 1).style("display", "block");
     
-        // Allow scrolling
         document.body.style.overflow = "auto";  
         document.documentElement.style.overflow = "auto";  
-    
-        // Ensure "I'm Done" button appears after 1 sec
+        createDropdowns(); 
+        createScatterplot();
+
+        // "I'm Done" button appears after 1 sec
         setTimeout(() => {
             d3.select("#doneButton").style("display", "block")
                 .transition().duration(1000).style("opacity", 1);
